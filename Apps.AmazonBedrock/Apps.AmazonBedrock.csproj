@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.Bedrock" Version="3.7.201.4" />
+      <PackageReference Include="AWSSDK.BedrockRuntime" Version="3.7.201.4" />
+      <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.2.0-alpha3" />
+      <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.12" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Inference\Responses" />
+    </ItemGroup>
+
+</Project>
