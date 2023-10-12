@@ -15,7 +15,7 @@ public class ConnectionDefinition : IConnectionDefinition
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new("Access key"),
-                new("Access secret")
+                new("Access secret") { Sensitive = true }
             }
         }
     };

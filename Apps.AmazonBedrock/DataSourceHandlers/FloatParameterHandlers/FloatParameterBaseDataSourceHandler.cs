@@ -17,7 +17,6 @@ public abstract class FloatParameterBaseDataSourceHandler : BaseInvocable, IData
     {
         var parameters = FloatArrayExtensions.GenerateFormattedFloatArray(LowerBoundary, UpperBoundary, 0.1f)
             .Where(parameter => context.SearchString == null || parameter.Contains(context.SearchString))
-            .Take(50)
             .ToDictionary(parameter => parameter, parameter => parameter);
 
         return parameters;

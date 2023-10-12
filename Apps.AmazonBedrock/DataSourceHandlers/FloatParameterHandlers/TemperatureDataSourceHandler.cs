@@ -2,12 +2,12 @@
 
 namespace Apps.AmazonBedrock.DataSourceHandlers.FloatParameterHandlers;
 
-public class AmazonTitanTemperatureDataSourceHandler : FloatParameterBaseDataSourceHandler
+public class TemperatureDataSourceHandler : FloatParameterBaseDataSourceHandler
 {
     protected override float LowerBoundary => 0.0f;
     protected override float UpperBoundary => 1.0f;
 
-    public AmazonTitanTemperatureDataSourceHandler(InvocationContext invocationContext) : base(invocationContext)
+    public TemperatureDataSourceHandler(InvocationContext invocationContext) : base(invocationContext)
     {
     }
 }

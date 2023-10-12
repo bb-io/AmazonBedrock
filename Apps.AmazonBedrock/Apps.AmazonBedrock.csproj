@@ -4,6 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Product>Blackbird Amazon Bedrock</Product>
+        <Version>1.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,10 +14,6 @@
       <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.2.0-alpha3" />
       <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.12" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Inference\Responses" />
     </ItemGroup>
 
 </Project>

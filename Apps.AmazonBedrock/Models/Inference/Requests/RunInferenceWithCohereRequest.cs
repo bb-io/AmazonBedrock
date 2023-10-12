@@ -9,7 +9,7 @@ public class RunInferenceWithCohereRequest
 {
     [Display("Model")]
     [DataSource(typeof(CohereModelDataSourceHandler))]
-    public string ModelId { get; set; }
+    public string ModelArn { get; set; }
     
     public string Prompt { get; set; }
     
@@ -20,12 +20,11 @@ public class RunInferenceWithCohereRequest
     [DataSource(typeof(TopPDataSourceHandler))]
     public float? TopP { get; set; }
     
-    [Display("Top K")]
-    [DataSource(typeof(TopKDataSourceHandler))]
-    public float? TopK { get; set; }
+    [Display("Top K (from 0 to 500)")]
+    public int? TopK { get; set; }
     
-    [Display("Max token count (from 0 to 4096)")]
-    public int? MaxTokenCount { get; set; }
+    [Display("Maximum tokens number (from 0 to 4096)")]
+    public int? MaximumTokensNumber { get; set; }
     
     [Display("Stop sequences")]
     public IEnumerable<string>? StopSequences { get; set; }

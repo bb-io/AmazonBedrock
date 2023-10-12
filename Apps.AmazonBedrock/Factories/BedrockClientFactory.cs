@@ -15,7 +15,7 @@ public static class BedrockClientFactory
 
         return new(key.Value, secret.Value, new AmazonBedrockConfig
         {
-            RegionEndpoint = RegionEndpoint.USWest2
+            RegionEndpoint = RegionEndpoint.USEast1
         });
     }
     
@@ -27,7 +27,7 @@ public static class BedrockClientFactory
         
         return new(key.Value, secret.Value, new AmazonBedrockRuntimeConfig
         {
-            RegionEndpoint = RegionEndpoint.USWest2
+            RegionEndpoint = RegionEndpoint.USEast1
         });
     }
 }
