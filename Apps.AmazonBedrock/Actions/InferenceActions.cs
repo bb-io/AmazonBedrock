@@ -23,8 +23,8 @@ public class InferenceActions: BaseInvocable
         _client = BedrockClientFactory.CreateBedrockRuntimeClient(invocationContext.AuthenticationCredentialsProviders);
     }
 
-    [Action("Generate text with Cohere Command model", Description = "Generate text with Cohere Command model or any " +
-                                                                     "custom model that is based on Cohere Command model.")]
+    [Action("Generate text with Cohere Command", Description = "Generate text with Cohere Command model or any custom " +
+                                                               "model that is based on Cohere Command model.")]
     public async Task<RunInferenceWithCohereResponse> RunInferenceWithCohere(
         [ActionParameter] RunInferenceWithCohereRequest input)
     {
@@ -43,8 +43,8 @@ public class InferenceActions: BaseInvocable
         return response.Generations.First();
     }
     
-    [Action("Generate text with Anthropic Claude model", Description = "Generate text with Anthropic Claude model or any " +
-                                                                       "custom model that is based on Anthropic Claude model.")]
+    [Action("Generate text with Anthropic Claude", Description = "Generate text with Anthropic Claude model or any " +
+                                                                 "custom model that is based on Anthropic Claude model.")]
     public async Task<RunInferenceWithAnthropicClaudeResponse> RunInferenceWithAnthropicClaude(
         [ActionParameter] RunInferenceWithAnthropicClaudeRequest input)
     {
@@ -62,9 +62,9 @@ public class InferenceActions: BaseInvocable
         return response;
     }
 
-    [Action("Generate text with AI21 Labs Jurassic-2 model", Description = "Generate text with AI21 Labs Jurassic-2 model " +
-                                                                           "or any custom model that is based on AI21 Labs " +
-                                                                           "Jurassic-2 model.")]
+    [Action("Generate text with AI21 Labs Jurassic-2", Description = "Generate text with AI21 Labs Jurassic-2 model or " +
+                                                                     "any custom model that is based on AI21 Labs " +
+                                                                     "Jurassic-2 model.")]
     public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21([ActionParameter] RunInferenceWithAI21Request input)
     {
         var requestBody = new
@@ -92,9 +92,9 @@ public class InferenceActions: BaseInvocable
         return response.Completions.First().Data;
     }
     
-    [Action("Generate image with Stability.ai Diffusion model", Description = "Generate image with Stability.ai Diffusion " +
-                                                                              "model or any custom model that is based on " +
-                                                                              "Stability.ai Diffusion model.")]
+    [Action("Generate image with Stability.ai Diffusion", Description = "Generate image with Stability.ai Diffusion model " +
+                                                                        "or any custom model that is based on Stability.ai " +
+                                                                        "Diffusion model.")]
     public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
         [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
     {
@@ -135,7 +135,7 @@ public class InferenceActions: BaseInvocable
     }
     
     // TODO: Uncomment this action when Amazon Titan text models are available. They are not available because they are in preview at the moment of writing.
-    // [Action("Run inference with Amazon Titan model", Description = "Run inference with Amazon Titan model.")]
+    // [Action("Run inference with Amazon Titan", Description = "Run inference with Amazon Titan model.")]
     // public async Task<> RunInferenceWithAmazonTitan([ActionParameter] RunInferenceWithAmazonTitanRequest input)
     // {
     //     var requestBody = new
