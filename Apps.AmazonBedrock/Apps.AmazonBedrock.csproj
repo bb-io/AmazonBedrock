@@ -5,7 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Product>Blackbird Amazon Bedrock</Product>
+        <Description>Fully managed service that offers a choice of high-performing foundation models from leading AI companies</Description>
         <Version>1.0.0</Version>
+        <AssemblyName>Apps.AmazonBedrock</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
