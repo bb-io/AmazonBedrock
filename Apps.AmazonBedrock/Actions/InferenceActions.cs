@@ -77,12 +77,13 @@ public class InferenceActions: BaseInvocable
             $"was translated as \"{input.TargetText}\"{(input.TargetLanguage != null ? $" into {input.TargetLanguage}" : "")}." +
             $"\n\n{input.AdditionalPrompt}";
 
-        var translationPrompt = "You are an expert linguist. You are provided with source text" +
-                                $"{(input.SourceLanguage != null ? $" in {input.SourceLanguage}" : "")} and target text" +
-                                $"{(input.TargetLanguage != null ? $" in {input.TargetLanguage}" : "")}. Respond with a " +
-                                "correct translation that would have no Language Quality Assessment errors (if there " +
-                                $"are any). Do not add any other information. \n\nSource text: \"{input.SourceText}\" " +
-                                $"\n\nTarget text: \"{input.TargetText}\"";
+        var translationPrompt = 
+            "You are an expert linguist. You are provided with source (original) text" +
+            $"{(input.SourceLanguage != null ? $" in {input.SourceLanguage}" : "")} and target (translated) text" +
+            $"{(input.TargetLanguage != null ? $" in {input.TargetLanguage}" : "")}. Perform a Language Quality " +
+            "Assessment on input texts and respond with a corrected target text that would have no Language Quality " +
+            "Assessment errors (if there are any). Do not include any other information in the response. " +
+            $"\n\nSource (original) text: \"{input.SourceText}\"\n\nTarget (translated) text: \"{input.TargetText}\"";
 
         var lqaRequestBody = new
         {
@@ -112,8 +113,8 @@ public class InferenceActions: BaseInvocable
 
         return new()
         {
-            LQAAnalysis = lqaResponse.Completion,
-            CorrectedTranslation = translationResponse.Completion
+            LQAAnalysis = lqaResponse.Completion.Trim('"'),
+            CorrectedTranslation = translationResponse.Completion.Trim('"')
         };
     }
 
