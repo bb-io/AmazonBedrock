@@ -62,6 +62,61 @@ public class InferenceActions: BaseInvocable
         return response;
     }
 
+    [Action("Perform an LQA analysis with Anthropic Claude", Description =
+        "Perform an LQA analysis with Anthropic Claude " +
+        "model.")]
+    public async Task<PerformLQAAnalysisWithAnthropicClaudeResponse> PerformLQAAnalysisWithAnthropicClaude(
+        [ActionParameter] PerformLQAAnalysisWithAnthropicClaudeRequest input)
+    {
+        var lqaPrompt =
+            "You are an expert linguist and your task is to perform a Language Quality Assessment on input " +
+            "sentences. Provide a quality rating for the original translation from 0 (completely bad) to 10 " +
+            "(perfect). Perform an LQA analysis and use the MQM 2.0 format. For each issue found, specify the " +
+            "category, description of the issue, and severity. \n\n" +
+            $"{(input.SourceLanguage != null ? $"The {input.SourceLanguage} " : "")}\"{input.SourceText}\" " +
+            $"was translated as \"{input.TargetText}\"{(input.TargetLanguage != null ? $" into {input.TargetLanguage}" : "")}." +
+            $"\n\n{input.AdditionalPrompt}";
+
+        var translationPrompt = "You are an expert linguist. You are provided with source text" +
+                                $"{(input.SourceLanguage != null ? $" in {input.SourceLanguage}" : "")} and target text" +
+                                $"{(input.TargetLanguage != null ? $" in {input.TargetLanguage}" : "")}. Respond with a " +
+                                "correct translation that would have no Language Quality Assessment errors (if there " +
+                                $"are any). Do not add any other information. \n\nSource text: \"{input.SourceText}\" " +
+                                $"\n\nTarget text: \"{input.TargetText}\"";
+
+        var lqaRequestBody = new
+        {
+            prompt = $"\n\nHuman:{lqaPrompt}\n\nAssistant:",
+            temperature = input.Temperature ?? 0.5,
+            top_p = input.TopP ?? 1,
+            top_k = input.TopK ?? 250,
+            max_tokens_to_sample = input.MaximumTokensNumber ?? 4000,
+            stop_sequences = input.StopSequences ?? new string[] { }
+        };
+
+        var lqaResponse = await ExecuteRequestAsync<RunInferenceWithAnthropicClaudeResponse>(input.ModelArn,
+            lqaRequestBody);
+
+        var translationRequestBody = new
+        {
+            prompt = $"\n\nHuman:{translationPrompt}\n\nAssistant:",
+            temperature = input.Temperature ?? 0.5,
+            top_p = input.TopP ?? 1,
+            top_k = input.TopK ?? 250,
+            max_tokens_to_sample = input.MaximumTokensNumber ?? 8000,
+            stop_sequences = input.StopSequences ?? new string[] { }
+        };
+
+        var translationResponse = await ExecuteRequestAsync<RunInferenceWithAnthropicClaudeResponse>(input.ModelArn,
+            translationRequestBody);
+
+        return new()
+        {
+            LQAAnalysis = lqaResponse.Completion,
+            CorrectedTranslation = translationResponse.Completion
+        };
+    }
+
     [Action("Generate text with AI21 Labs Jurassic-2", Description = "Generate text with AI21 Labs Jurassic-2 model or " +
                                                                      "any custom model that is based on AI21 Labs " +
                                                                      "Jurassic-2 model.")]
