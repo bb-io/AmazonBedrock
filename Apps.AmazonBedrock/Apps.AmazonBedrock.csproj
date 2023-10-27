@@ -4,9 +4,9 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Product>Blackbird Amazon Bedrock</Product>
+        <Product>Amazon Bedrock</Product>
         <Description>Fully managed service that offers a choice of high-performing foundation models from leading AI companies</Description>
-        <Version>1.1.1</Version>
+        <Version>1.1.2</Version>
         <AssemblyName>Apps.AmazonBedrock</AssemblyName>
     </PropertyGroup>
 
