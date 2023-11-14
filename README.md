@@ -56,7 +56,7 @@ Before you can connect you need to make sure that:
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My organization'.
 4. Fill in the access key and secret obtained in the previous section.
-5. Click _Connect_. 
+5. Click _Connect_.
 6. Confirm that the connection has appeared and the status is _Connected_.
 
 ![Connecting](image/README/connecting.png)
@@ -69,4 +69,8 @@ Before you can connect you need to make sure that:
 - **Generate text with Cohere Command model** generates text with Cohere Command model or any custom model that is based on Cohere Command model.
 - **Generate embedding** generates embedding vector for a text provided. An embedding is a list of floating point numbers that captures semantic information about the text that it represents. Embeddings can be used to store data in vector databases (like Pinecone).
 
-<!-- end docs --> 
+## Feedback
+
+Do you want to use this app or do you have feedback on our implementation? Reach out to us using the [established channels](https://www.blackbird.io/) or create an issue.
+
+<!-- end docs -->
