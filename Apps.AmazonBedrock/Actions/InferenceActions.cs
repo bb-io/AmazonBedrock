@@ -147,6 +147,23 @@ public class InferenceActions: BaseInvocable
         var response = await ExecuteRequestAsync<RunInferenceWithAI21ResponseWrapper>(input.ModelArn, requestBody);
         return response.Completions.First().Data;
     }
+
+    [Action("Generate text with Meta Llama 2", Description = "Generate text with Meta Llama 2 model or any custom " +
+                                                             "model that is based on Meta Llama 2 model.")]
+    public async Task<RunInferenceWithMetaLlamaResponse> RunInferenceWithMetaLlama(
+        [ActionParameter] RunInferenceWithMetaLlamaRequest input)
+    {
+        var requestBody = new
+        {
+            prompt = input.Prompt,
+            temperature = input.Temperature ?? 0.5,
+            top_p = input.TopP ?? 0.9,
+            max_gen_len = input.MaximumTokensNumber ?? 512
+        };
+
+        var response = await ExecuteRequestAsync<RunInferenceWithMetaLlamaResponse>(input.ModelArn, requestBody);
+        return response;
+    }
     
     [Action("Generate image with Stability.ai Diffusion", Description = "Generate image with Stability.ai Diffusion model " +
                                                                         "or any custom model that is based on Stability.ai " +
