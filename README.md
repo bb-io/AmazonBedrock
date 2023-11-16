@@ -63,10 +63,12 @@ Before you can connect you need to make sure that:
 
 ## Actions
 
-- **Generate image with Stability.ai Diffusion model** generates text with Stability.ai Diffusion model or any custom model that is based on Stability.ai Diffusion model.
-- **Generate text with AI21 Labs Jurassic-2 model** generates text with AI21 Labs Jurassic-2 model or any custom model that is based on AI21 Labs Jurassic-2 model.
-- **Generate text with Anthropic Claude model** generates text with Anthropic Claude model or any custom model that is based on Anthropic Claude model.
-- **Generate text with Cohere Command model** generates text with Cohere Command model or any custom model that is based on Cohere Command model.
+- **Generate image with Stability.ai Diffusion** generates text with Stability.ai Diffusion model or any custom model that is based on Stability.ai Diffusion model.
+- **Generate text with AI21 Labs Jurassic-2** generates text with AI21 Labs Jurassic-2 model or any custom model that is based on AI21 Labs Jurassic-2 model.
+- **Generate text with Meta Llama 2** generates text with Meta Llama 2 model or any custom model that is based on Meta Llama 2 model.
+- **Generate text with Anthropic Claude** generates text with Anthropic Claude model or any custom model that is based on Anthropic Claude model.
+- **Perform an LQA analysis with Anthropic Claude** uses pre-engineered prompt to conduct a Language Quality Assessment analysis of the translated text using the Anthropic Claude model.
+- **Generate text with Cohere Command** generates text with Cohere Command model or any custom model that is based on Cohere Command model.
 - **Generate embedding** generates embedding vector for a text provided. An embedding is a list of floating point numbers that captures semantic information about the text that it represents. Embeddings can be used to store data in vector databases (like Pinecone).
 
 ## Feedback
