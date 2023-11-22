@@ -50,7 +50,7 @@ public class InferenceActions: BaseInvocable
     {
         var requestBody = new
         {
-            prompt = $"\n\nHuman:{input.Prompt}\n\nAssistant:",
+            prompt = (input.SystemPrompt == null ? "" : input.SystemPrompt) + $"\n\nHuman:{input.Prompt}\n\nAssistant:",
             temperature = input.Temperature ?? 0.5,
             top_p = input.TopP ?? 1,
             top_k = input.TopK ?? 250,
@@ -234,7 +234,7 @@ public class InferenceActions: BaseInvocable
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(jsonRequestBody));
         
         var response = await _client.InvokeModelAsync(new InvokeModelRequest
-        {
+        {      
             ModelId = modelArn,
             ContentType = MediaTypeNames.Application.Json,
             Body = memoryStream
