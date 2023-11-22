@@ -12,7 +12,10 @@ public class RunInferenceWithAnthropicClaudeRequest
     public string ModelArn { get; set; }
     
     public string Prompt { get; set; }
-    
+
+    [Display("System prompt")]
+    public string? SystemPrompt { get; set; }
+
     [DataSource(typeof(TemperatureDataSourceHandler))]
     public float? Temperature { get; set; }
     
