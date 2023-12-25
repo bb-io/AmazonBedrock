@@ -8,23 +8,28 @@ using Apps.AmazonBedrock.Models.Inference.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.AmazonBedrock.Actions;
 
 [ActionList]
-public class InferenceActions: BaseInvocable
+public class InferenceActions : BaseInvocable
 {
     private readonly AmazonBedrockRuntimeClient _client;
 
-    public InferenceActions(InvocationContext invocationContext) : base(invocationContext)
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public InferenceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
+        invocationContext)
     {
+        _fileManagementClient = fileManagementClient;
         _client = BedrockClientFactory.CreateBedrockRuntimeClient(invocationContext.AuthenticationCredentialsProviders);
     }
 
-    [Action("Generate text with Cohere Command", Description = "Generate text with Cohere Command model or any custom " +
-                                                               "model that is based on Cohere Command model.")]
+    [Action("Generate text with Cohere Command", Description =
+        "Generate text with Cohere Command model or any custom " +
+        "model that is based on Cohere Command model.")]
     public async Task<RunInferenceWithCohereResponse> RunInferenceWithCohere(
         [ActionParameter] RunInferenceWithCohereRequest input)
     {
@@ -42,7 +47,7 @@ public class InferenceActions: BaseInvocable
         var response = await ExecuteRequestAsync<RunInferenceWithCohereResponseWrapper>(input.ModelArn, requestBody);
         return response.Generations.First();
     }
-    
+
     [Action("Generate text with Anthropic Claude", Description = "Generate text with Anthropic Claude model or any " +
                                                                  "custom model that is based on Anthropic Claude model.")]
     public async Task<RunInferenceWithAnthropicClaudeResponse> RunInferenceWithAnthropicClaude(
@@ -77,7 +82,7 @@ public class InferenceActions: BaseInvocable
             $"was translated as \"{input.TargetText}\"{(input.TargetLanguage != null ? $" into {input.TargetLanguage}" : "")}." +
             $"\n\n{input.AdditionalPrompt}";
 
-        var translationPrompt = 
+        var translationPrompt =
             "You are an expert linguist. You are provided with source (original) text" +
             $"{(input.SourceLanguage != null ? $" in {input.SourceLanguage}" : "")} and target (translated) text" +
             $"{(input.TargetLanguage != null ? $" in {input.TargetLanguage}" : "")}. Perform a Language Quality " +
@@ -118,10 +123,12 @@ public class InferenceActions: BaseInvocable
         };
     }
 
-    [Action("Generate text with AI21 Labs Jurassic-2", Description = "Generate text with AI21 Labs Jurassic-2 model or " +
-                                                                     "any custom model that is based on AI21 Labs " +
-                                                                     "Jurassic-2 model.")]
-    public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21([ActionParameter] RunInferenceWithAI21Request input)
+    [Action("Generate text with AI21 Labs Jurassic-2", Description =
+        "Generate text with AI21 Labs Jurassic-2 model or " +
+        "any custom model that is based on AI21 Labs " +
+        "Jurassic-2 model.")]
+    public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21(
+        [ActionParameter] RunInferenceWithAI21Request input)
     {
         var requestBody = new
         {
@@ -164,10 +171,11 @@ public class InferenceActions: BaseInvocable
         var response = await ExecuteRequestAsync<RunInferenceWithMetaLlamaResponse>(input.ModelArn, requestBody);
         return response;
     }
-    
-    [Action("Generate image with Stability.ai Diffusion", Description = "Generate image with Stability.ai Diffusion model " +
-                                                                        "or any custom model that is based on Stability.ai " +
-                                                                        "Diffusion model.")]
+
+    [Action("Generate image with Stability.ai Diffusion", Description =
+        "Generate image with Stability.ai Diffusion model " +
+        "or any custom model that is based on Stability.ai " +
+        "Diffusion model.")]
     public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
         [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
     {
@@ -182,16 +190,15 @@ public class InferenceActions: BaseInvocable
         };
 
         var response = await ExecuteRequestAsync<ImageBytesWrapper>(input.ModelArn, requestBody);
+
         var bytes = response.Artifacts.First().Base64;
-        var filename = (input.GeneratedImageFilename ?? input.Prompt) + ".png";
-        
+        var fileName = (input.GeneratedImageFilename ?? input.Prompt) + ".png";
+
+        var file = await _fileManagementClient.UploadAsync(new MemoryStream(bytes), MediaTypeNames.Image.Png, fileName);
+
         return new()
         {
-            GeneratedImage = new File(bytes)
-            {
-                ContentType = "image/png",
-                Name = filename
-            }
+            GeneratedImage = file
         };
     }
 
@@ -202,11 +209,11 @@ public class InferenceActions: BaseInvocable
         {
             inputText = input.Text
         };
-        
+
         var response = await ExecuteRequestAsync<GenerateEmbeddingResponse>(input.ModelArn, requestBody);
         return response;
     }
-    
+
     // TODO: Uncomment this action when Amazon Titan text models are available. They are not available because they are in preview at the moment of writing.
     // [Action("Run inference with Amazon Titan", Description = "Run inference with Amazon Titan model.")]
     // public async Task<> RunInferenceWithAmazonTitan([ActionParameter] RunInferenceWithAmazonTitanRequest input)
@@ -232,9 +239,9 @@ public class InferenceActions: BaseInvocable
         var jsonRequestBody = JsonConvert.SerializeObject(requestBody);
 
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(jsonRequestBody));
-        
+
         var response = await _client.InvokeModelAsync(new InvokeModelRequest
-        {      
+        {
             ModelId = modelArn,
             ContentType = MediaTypeNames.Application.Json,
             Body = memoryStream
