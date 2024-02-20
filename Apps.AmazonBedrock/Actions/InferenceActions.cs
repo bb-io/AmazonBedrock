@@ -163,7 +163,7 @@ public class InferenceActions : BaseInvocable
         var response = await ExecuteRequestAsync<ImageBytesWrapper>(input.ModelArn, requestBody);
 
         var bytes = response.Artifacts.First().Base64;
-        var fileName = (input.GeneratedImageFilename ?? input.Prompt) + ".png";
+        var fileName = (input.GeneratedImageFilename ?? "image") + ".png";
 
         var file = await _fileManagementClient.UploadAsync(new MemoryStream(bytes), MediaTypeNames.Image.Png, fileName);
 
@@ -220,7 +220,7 @@ public class InferenceActions : BaseInvocable
         
         var response = await ExecuteRequestAsync<GeneratedImageWrapper>(input.ModelArn, requestBody);
         var generatedImageBytes = Convert.FromBase64String(response.Images.First());
-        var fileName = (input.GeneratedImageFileName ?? input.Prompt) + ".png";
+        var fileName = (input.GeneratedImageFileName ?? "image") + ".png";
 
         await using var generatedImageStream = new MemoryStream(generatedImageBytes);
         var generatedImageFileReference =
