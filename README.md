@@ -69,6 +69,7 @@ Before you can connect you need to make sure that:
 - **Generate text with Anthropic Claude** generates text with Anthropic Claude model or any custom model that is based on Anthropic Claude model.
 - **Perform an LQA analysis with Anthropic Claude** uses pre-engineered prompt to conduct a Language Quality Assessment analysis of the translated text using the Anthropic Claude model.
 - **Generate text with Cohere Command** generates text with Cohere Command model or any custom model that is based on Cohere Command model.
+- **Generate text with Amazon Titan** generates text with Amazon Titan model or any custom model that is based on Amazon Titan model.
 - **Generate embedding** generates embedding vector for a text provided. An embedding is a list of floating point numbers that captures semantic information about the text that it represents. Embeddings can be used to store data in vector databases (like Pinecone).
 
 ## Feedback

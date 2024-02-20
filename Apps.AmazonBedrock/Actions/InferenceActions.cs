@@ -27,9 +27,11 @@ public class InferenceActions : BaseInvocable
         _client = BedrockClientFactory.CreateBedrockRuntimeClient(invocationContext.AuthenticationCredentialsProviders);
     }
 
-    [Action("Generate text with Cohere Command", Description =
-        "Generate text with Cohere Command model or any custom " +
-        "model that is based on Cohere Command model.")]
+    #region Text generation
+
+    [Action("Generate text with Cohere Command", Description = "Generate text with Cohere Command model " +
+                                                               "or any custom model that is based on Cohere " +
+                                                               "Command model.")]
     public async Task<RunInferenceWithCohereResponse> RunInferenceWithCohere(
         [ActionParameter] RunInferenceWithCohereRequest input)
     {
@@ -66,6 +68,114 @@ public class InferenceActions : BaseInvocable
         var response = await ExecuteRequestAsync<RunInferenceWithAnthropicClaudeResponse>(input.ModelArn, requestBody);
         return response;
     }
+    
+    [Action("Generate text with AI21 Labs Jurassic-2", Description = "Generate text with AI21 Labs Jurassic-2 model or " +
+                                                                     "any custom model that is based on AI21 Labs " +
+                                                                     "Jurassic-2 model.")]
+    public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21(
+        [ActionParameter] RunInferenceWithAI21Request input)
+    {
+        var requestBody = new
+        {
+            prompt = input.Prompt,
+            temperature = input.Temperature ?? 0.5,
+            topP = input.TopP ?? 0.5,
+            maxTokens = input.MaximumTokensNumber ?? 512,
+            stopSequences = input.StopSequences ?? new string[] { },
+            countPenalty = new
+            {
+                scale = input.CountPenalty ?? 0
+            },
+            presencePenalty = new
+            {
+                scale = input.PresencePenalty ?? 0
+            },
+            frequencyPenalty = new
+            {
+                scale = input.FrequencyPenalty ?? 0
+            }
+        };
+
+        var response = await ExecuteRequestAsync<RunInferenceWithAI21ResponseWrapper>(input.ModelArn, requestBody);
+        return response.Completions.First().Data;
+    }
+
+    [Action("Generate text with Meta Llama 2", Description = "Generate text with Meta Llama 2 model or any custom " +
+                                                             "model that is based on Meta Llama 2 model.")]
+    public async Task<RunInferenceWithMetaLlamaResponse> RunInferenceWithMetaLlama(
+        [ActionParameter] RunInferenceWithMetaLlamaRequest input)
+    {
+        var requestBody = new
+        {
+            prompt = input.Prompt,
+            temperature = input.Temperature ?? 0.5,
+            top_p = input.TopP ?? 0.9,
+            max_gen_len = input.MaximumTokensNumber ?? 512
+        };
+
+        var response = await ExecuteRequestAsync<RunInferenceWithMetaLlamaResponse>(input.ModelArn, requestBody);
+        return response;
+    }
+    
+    [Action("Generate text with Amazon Titan", Description = "Generate text with Amazon Titan model or any " +
+                                                             "custom model that is based on Amazon Titan model.")]
+    public async Task<RunInferenceWithAmazonTitanResponse> RunInferenceWithAmazonTitan(
+        [ActionParameter] RunInferenceWithAmazonTitanRequest input)
+    {
+        var requestBody = new
+        {
+            inputText = input.Prompt,
+            textGenerationConfig = new
+            {
+                temperature = input.Temperature ?? 0,
+                topP = input.TopP ?? 1,
+                maxTokenCount = input.MaximumTokensNumber ?? 512,
+                stopSequences = input.StopSequences ?? new string[] { }
+            }
+        };
+
+        var response =
+            await ExecuteRequestAsync<RunInferenceWithAmazonTitanResponseWrapper>(input.ModelArn, requestBody);
+        return response.Results.First();
+    }
+    
+    #endregion
+
+    #region Image generation
+
+    [Action("Generate image with Stability.ai Diffusion", Description =
+        "Generate image with Stability.ai Diffusion model " +
+        "or any custom model that is based on Stability.ai " +
+        "Diffusion model.")]
+    public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
+        [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
+    {
+        var requestBody = new
+        {
+            text_prompts = new[]
+            {
+                new { text = input.Prompt }
+            },
+            cfg_scale = input.PromptStrength ?? 10,
+            steps = input.GenerationSteps ?? 50
+        };
+
+        var response = await ExecuteRequestAsync<ImageBytesWrapper>(input.ModelArn, requestBody);
+
+        var bytes = response.Artifacts.First().Base64;
+        var fileName = (input.GeneratedImageFilename ?? input.Prompt) + ".png";
+
+        var file = await _fileManagementClient.UploadAsync(new MemoryStream(bytes), MediaTypeNames.Image.Png, fileName);
+
+        return new()
+        {
+            GeneratedImage = file
+        };
+    }
+
+    #endregion
+    
+    #region Translation-related
 
     [Action("Perform an LQA analysis with Anthropic Claude", Description =
         "Perform an LQA analysis with Anthropic Claude " +
@@ -122,85 +232,10 @@ public class InferenceActions : BaseInvocable
             CorrectedTranslation = translationResponse.Completion.Trim('"')
         };
     }
+    
+    #endregion
 
-    [Action("Generate text with AI21 Labs Jurassic-2", Description =
-        "Generate text with AI21 Labs Jurassic-2 model or " +
-        "any custom model that is based on AI21 Labs " +
-        "Jurassic-2 model.")]
-    public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21(
-        [ActionParameter] RunInferenceWithAI21Request input)
-    {
-        var requestBody = new
-        {
-            prompt = input.Prompt,
-            temperature = input.Temperature ?? 0.5,
-            topP = input.TopP ?? 0.5,
-            maxTokens = input.MaximumTokensNumber ?? 512,
-            stopSequences = input.StopSequences ?? new string[] { },
-            countPenalty = new
-            {
-                scale = input.CountPenalty ?? 0
-            },
-            presencePenalty = new
-            {
-                scale = input.PresencePenalty ?? 0
-            },
-            frequencyPenalty = new
-            {
-                scale = input.FrequencyPenalty ?? 0
-            }
-        };
-
-        var response = await ExecuteRequestAsync<RunInferenceWithAI21ResponseWrapper>(input.ModelArn, requestBody);
-        return response.Completions.First().Data;
-    }
-
-    [Action("Generate text with Meta Llama 2", Description = "Generate text with Meta Llama 2 model or any custom " +
-                                                             "model that is based on Meta Llama 2 model.")]
-    public async Task<RunInferenceWithMetaLlamaResponse> RunInferenceWithMetaLlama(
-        [ActionParameter] RunInferenceWithMetaLlamaRequest input)
-    {
-        var requestBody = new
-        {
-            prompt = input.Prompt,
-            temperature = input.Temperature ?? 0.5,
-            top_p = input.TopP ?? 0.9,
-            max_gen_len = input.MaximumTokensNumber ?? 512
-        };
-
-        var response = await ExecuteRequestAsync<RunInferenceWithMetaLlamaResponse>(input.ModelArn, requestBody);
-        return response;
-    }
-
-    [Action("Generate image with Stability.ai Diffusion", Description =
-        "Generate image with Stability.ai Diffusion model " +
-        "or any custom model that is based on Stability.ai " +
-        "Diffusion model.")]
-    public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
-        [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
-    {
-        var requestBody = new
-        {
-            text_prompts = new[]
-            {
-                new { text = input.Prompt }
-            },
-            cfg_scale = input.PromptStrength ?? 10,
-            steps = input.GenerationSteps ?? 50
-        };
-
-        var response = await ExecuteRequestAsync<ImageBytesWrapper>(input.ModelArn, requestBody);
-
-        var bytes = response.Artifacts.First().Base64;
-        var fileName = (input.GeneratedImageFilename ?? input.Prompt) + ".png";
-
-        var file = await _fileManagementClient.UploadAsync(new MemoryStream(bytes), MediaTypeNames.Image.Png, fileName);
-
-        return new()
-        {
-            GeneratedImage = file
-        };
-    }
+    #region Embeddings
 
     [Action("Generate embedding", Description = "Generate embedding vector for a text provided.")]
     public async Task<GenerateEmbeddingResponse> GenerateEmbedding([ActionParameter] GenerateEmbeddingRequest input)
@@ -214,25 +249,7 @@ public class InferenceActions : BaseInvocable
         return response;
     }
 
-    // TODO: Uncomment this action when Amazon Titan text models are available. They are not available because they are in preview at the moment of writing.
-    // [Action("Run inference with Amazon Titan", Description = "Run inference with Amazon Titan model.")]
-    // public async Task<> RunInferenceWithAmazonTitan([ActionParameter] RunInferenceWithAmazonTitanRequest input)
-    // {
-    //     var requestBody = new
-    //     {
-    //         inputText = input.Prompt,
-    //         textGenerationConfig = new
-    //         {
-    //             temperature = input.Temperature ?? 0,
-    //             topP = input.TopP ?? 1,
-    //             maxTokenCount = input.MaximumTokensNumber ?? 512,
-    //             stopSequences = input.StopSequences ?? new string[] { }
-    //         }
-    //     };
-    //
-    //     var response = await ExecuteRequestAsync<>(input.ModelArn, requestBody);
-    //     return response;
-    // }
+    #endregion
 
     private async Task<TResponse> ExecuteRequestAsync<TResponse>(string modelArn, object requestBody)
     {
