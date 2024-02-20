@@ -20,6 +20,6 @@ public class RunInferenceWithStabilityAIDiffusionRequest
     [Display("Generation steps (from 0 to 150)")]
     public int? GenerationSteps { get; set; }
     
-    [Display("Generated image filename without extension")]
+    [Display("Generated image file name", Description = "Generated image file name without an extension.")]
     public string? GeneratedImageFilename { get; set; }
 }

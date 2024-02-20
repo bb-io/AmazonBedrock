@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Newtonsoft.Json;
 
 namespace Apps.AmazonBedrock.Actions;
@@ -143,10 +144,9 @@ public class InferenceActions : BaseInvocable
 
     #region Image generation
 
-    [Action("Generate image with Stability.ai Diffusion", Description =
-        "Generate image with Stability.ai Diffusion model " +
-        "or any custom model that is based on Stability.ai " +
-        "Diffusion model.")]
+    [Action("Generate image with Stability.ai Diffusion", Description = "Generate image with Stability.ai Diffusion model " +
+                                                                        "or any custom model that is based on Stability.ai " +
+                                                                        "Diffusion model.")]
     public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
         [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
     {
@@ -171,6 +171,62 @@ public class InferenceActions : BaseInvocable
         {
             GeneratedImage = file
         };
+    }
+
+    [Action("Generate or edit image with Amazon Titan Image", 
+        Description = "Generate or edit image with Amazon Titan Image model or any custom model that is based on " +
+                      "Amazon Titan Image model. If you are generating an image, leave the 'Image' parameter " +
+                      "unspecified. Otherwise, if you are editing an existing image, specify the 'Image' parameter " +
+                      "with the appropriate image file.")]
+    public async Task<RunInferenceWithAmazonTitanImageResponse> RunInferenceWithAmazonTitanImage(
+        [ActionParameter] RunInferenceWithAmazonTitanImageRequest input)
+    {
+        var height = 1024;
+        var width = 1024;
+
+        if (input.Size != null)
+        {
+            var parts = input.Size.Split('x');
+            height = int.Parse(parts[0]);
+            width = int.Parse(parts[1]);
+        }
+
+        string? imageBase64string = null;
+
+        if (input.Image != null)
+        {
+            await using var imageStream = await _fileManagementClient.DownloadAsync(input.Image);
+            var imageBytes = await imageStream.GetByteData();
+            imageBase64string = Convert.ToBase64String(imageBytes);
+        }
+        
+        var requestBody = new
+        {
+            taskType = input.Image == null ? "TEXT_IMAGE" : "IMAGE_VARIATION",
+            textToImageParams = new
+            {
+                text = input.Prompt,
+                negativeText = input.NegativePrompt,
+                images = imageBase64string == null ? null : new[] { imageBase64string }
+            },
+            imageGenerationConfig = new
+            {
+                height,
+                width,
+                numberOfImages = 1,
+                cfgScale = input.CfgScale ?? 8
+            }
+        };
+        
+        var response = await ExecuteRequestAsync<GeneratedImageWrapper>(input.ModelArn, requestBody);
+        var generatedImageBytes = Convert.FromBase64String(response.Images.First());
+        var fileName = (input.GeneratedImageFileName ?? input.Prompt) + ".png";
+
+        await using var generatedImageStream = new MemoryStream(generatedImageBytes);
+        var generatedImageFileReference =
+            await _fileManagementClient.UploadAsync(generatedImageStream, MediaTypeNames.Image.Png, fileName);
+        
+        return new() { GeneratedImage = generatedImageFileReference };
     }
 
     #endregion
@@ -253,7 +309,10 @@ public class InferenceActions : BaseInvocable
 
     private async Task<TResponse> ExecuteRequestAsync<TResponse>(string modelArn, object requestBody)
     {
-        var jsonRequestBody = JsonConvert.SerializeObject(requestBody);
+        var jsonRequestBody = JsonConvert.SerializeObject(requestBody, new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        });
 
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(jsonRequestBody));
 
