@@ -1,12 +1,12 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
 
 namespace Apps.AmazonBedrock.Models.Inference.Responses;
 
 public class RunInferenceWithStabilityAIDiffusionResponse
 {
     [Display("Generated image")]
-    public File GeneratedImage { get; set; }
+    public FileReference GeneratedImage { get; set; }
 }
 
 public class ImageBytesWrapper 

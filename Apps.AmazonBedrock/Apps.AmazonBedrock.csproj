@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Product>Amazon Bedrock</Product>
     <Description>Fully managed service that offers a choice of high-performing foundation models from leading AI companies</Description>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <AssemblyName>Apps.AmazonBedrock</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1" />
+    <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
     <PackageReference Include="AWSSDK.Bedrock" Version="3.7.300.7" />
     <PackageReference Include="AWSSDK.BedrockRuntime" Version="3.7.300.7" />
-    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.2.0-alpha3" />
     <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
