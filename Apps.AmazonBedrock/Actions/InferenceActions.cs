@@ -174,10 +174,9 @@ public class InferenceActions : BaseInvocable
     }
 
     [Action("Generate or edit image with Amazon Titan Image", 
-        Description = "Generate or edit image with Amazon Titan Image model or any custom model that is based on " +
-                      "Amazon Titan Image model. If you are generating an image, leave the 'Image' parameter " +
-                      "unspecified. Otherwise, if you are editing an existing image, specify the 'Image' parameter " +
-                      "with the appropriate image file.")]
+        Description = "Generate or edit an image with the Amazon Titan Image model or any custom model based on " +
+                      "it. If generating, leave 'Image' unspecified; for editing, specify the 'Image' parameter " +
+                      "with the appropriate file.")]
     public async Task<RunInferenceWithAmazonTitanImageResponse> RunInferenceWithAmazonTitanImage(
         [ActionParameter] RunInferenceWithAmazonTitanImageRequest input)
     {
