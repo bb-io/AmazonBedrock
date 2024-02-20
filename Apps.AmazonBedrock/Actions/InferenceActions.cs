@@ -180,6 +180,13 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithAmazonTitanImageResponse> RunInferenceWithAmazonTitanImage(
         [ActionParameter] RunInferenceWithAmazonTitanImageRequest input)
     {
+        async Task<string> GetBase64StringForImage()
+        {
+            await using var imageStream = await _fileManagementClient.DownloadAsync(input.Image);
+            var imageBytes = await imageStream.GetByteData();
+            return Convert.ToBase64String(imageBytes);
+        }
+        
         var height = 1024;
         var width = 1024;
 
@@ -190,24 +197,24 @@ public class InferenceActions : BaseInvocable
             width = int.Parse(parts[1]);
         }
 
-        string? imageBase64string = null;
-
-        if (input.Image != null)
-        {
-            await using var imageStream = await _fileManagementClient.DownloadAsync(input.Image);
-            var imageBytes = await imageStream.GetByteData();
-            imageBase64string = Convert.ToBase64String(imageBytes);
-        }
-        
         var requestBody = new
         {
             taskType = input.Image == null ? "TEXT_IMAGE" : "IMAGE_VARIATION",
-            textToImageParams = new
-            {
-                text = input.Prompt,
-                negativeText = input.NegativePrompt,
-                images = imageBase64string == null ? null : new[] { imageBase64string }
-            },
+            textToImageParams = input.Image == null
+                ? new 
+                {
+                    text = input.Prompt,
+                    negativeText = input.NegativePrompt
+                }
+                : null,
+            imageVariationParams = input.Image != null
+                ? new
+                {
+                    text = input.Prompt,
+                    negativeText = input.NegativePrompt,
+                    images = new[] { await GetBase64StringForImage() }
+                }
+                : null,
             imageGenerationConfig = new
             {
                 height,

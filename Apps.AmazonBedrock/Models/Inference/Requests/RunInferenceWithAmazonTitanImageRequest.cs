@@ -25,6 +25,7 @@ public class RunInferenceWithAmazonTitanImageRequest
     [Display("Image", Description = "Image for which to generate variation.")]
     public FileReference? Image { get; set; }
     
+    [Display("Size", Description = "Generated image size; defaults to 1024x1024.")]
     [DataSource(typeof(ImageSizeDataSourceHandler))]
     public string? Size { get; set; } 
     
