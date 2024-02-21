@@ -75,7 +75,7 @@ Before you can connect you need to make sure that:
 ### Image
 
 - **Generate image with Stability.ai Diffusion** generates text with Stability.ai Diffusion model or any custom model that is based on Stability.ai Diffusion model.
-- **Generate or edit image with Amazon Titan Image** generates or edits an image with Amazon Titan Image model or any custom model that is based on Amazon Titan Image model. If you plan to generate an image, leave the _Image_ parameter unspecified. Otherwise, if you are editing an existing image, specify the _Image_ parameter with the appropriate image file.
+- **Generate or edit image with Amazon Titan Image** generates or edits an image with Amazon Titan Image model or any custom model that is based on Amazon Titan Image model. If you plan to generate an image, leave the _Image_ parameter unspecified. Otherwise, if you are editing an existing image, specify the _Image_ parameter with the appropriate image file. Please note that the maximum input character limit is 1024, and for image generation tasks, the allowed maximum image size is 4,096 x 4,096 pixels. Learn more about the limitations of the Amazon Titan Image Generator G1 model [here](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html).
 
 ### Embedding
 
