@@ -321,14 +321,22 @@ public class InferenceActions : BaseInvocable
         });
 
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(jsonRequestBody));
-
-        var response = await _client.InvokeModelAsync(new InvokeModelRequest
+        InvokeModelResponse response;
+        
+        try
         {
-            ModelId = modelArn,
-            ContentType = MediaTypeNames.Application.Json,
-            Body = memoryStream
-        });
-
+            response = await _client.InvokeModelAsync(new InvokeModelRequest
+            {
+                ModelId = modelArn,
+                ContentType = MediaTypeNames.Application.Json,
+                Body = memoryStream
+            });
+        }
+        catch (AmazonBedrockRuntimeException exception)
+        {
+            throw new(exception.Message);
+        }
+        
         var jsonResponse = Encoding.UTF8.GetString(response.Body.ToArray());
         var responseObject = JsonConvert.DeserializeObject<TResponse>(jsonResponse, new JsonSerializerSettings
         {
