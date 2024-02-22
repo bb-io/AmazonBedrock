@@ -63,12 +63,22 @@ Before you can connect you need to make sure that:
 
 ## Actions
 
-- **Generate image with Stability.ai Diffusion** generates text with Stability.ai Diffusion model or any custom model that is based on Stability.ai Diffusion model.
+### Text
+
 - **Generate text with AI21 Labs Jurassic-2** generates text with AI21 Labs Jurassic-2 model or any custom model that is based on AI21 Labs Jurassic-2 model.
 - **Generate text with Meta Llama 2** generates text with Meta Llama 2 model or any custom model that is based on Meta Llama 2 model.
 - **Generate text with Anthropic Claude** generates text with Anthropic Claude model or any custom model that is based on Anthropic Claude model.
 - **Perform an LQA analysis with Anthropic Claude** uses pre-engineered prompt to conduct a Language Quality Assessment analysis of the translated text using the Anthropic Claude model.
 - **Generate text with Cohere Command** generates text with Cohere Command model or any custom model that is based on Cohere Command model.
+- **Generate text with Amazon Titan** generates text with Amazon Titan model or any custom model that is based on Amazon Titan model.
+
+### Image
+
+- **Generate image with Stability.ai Diffusion** generates text with Stability.ai Diffusion model or any custom model that is based on Stability.ai Diffusion model.
+- **Generate or edit image with Amazon Titan Image** generates or edits an image with Amazon Titan Image model or any custom model that is based on Amazon Titan Image model. If you plan to generate an image, leave the _Image_ parameter unspecified. Otherwise, if you are editing an existing image, specify the _Image_ parameter with the appropriate image file. Please note that the maximum input character limit is 1024, and for image generation tasks, the allowed maximum image size is 4,096 x 4,096 pixels. Learn more about the limitations of the Amazon Titan Image Generator G1 model [here](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html).
+
+### Embedding
+
 - **Generate embedding** generates embedding vector for a text provided. An embedding is a list of floating point numbers that captures semantic information about the text that it represents. Embeddings can be used to store data in vector databases (like Pinecone).
 
 ## Feedback
