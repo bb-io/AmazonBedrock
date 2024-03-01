@@ -1,20 +1,18 @@
 ﻿using Apps.AmazonBedrock.DataSourceHandlers.EnumHandlers;
 using Apps.AmazonBedrock.DataSourceHandlers.FloatParameterHandlers;
 using Apps.AmazonBedrock.DataSourceHandlers.ModelHandlers;
+using Apps.AmazonBedrock.Models.Inference.Requests.Base;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Files;
 
 namespace Apps.AmazonBedrock.Models.Inference.Requests;
 
-public class RunInferenceWithAmazonTitanImageRequest
+public class RunInferenceWithAmazonTitanImageRequest : RunInferenceBase
 {
     [Display("Model")]
     [DataSource(typeof(AmazonTitanImageModelDataSourceHandler))]
     public string ModelArn { get; set; }
-    
-    [Display("Prompt", Description = "A text prompt to generate the image.")]
-    public string Prompt { get; set; }
     
     [Display("Negative prompt", Description = "A text prompt to define what not to include in the image. Avoid " +
                                               "using negative words. For instance, if you prefer not to " +

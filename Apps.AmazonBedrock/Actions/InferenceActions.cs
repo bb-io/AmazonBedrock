@@ -2,6 +2,7 @@
 using System.Text;
 using Amazon.BedrockRuntime;
 using Amazon.BedrockRuntime.Model;
+using Apps.AmazonBedrock.Extensions;
 using Apps.AmazonBedrock.Factories;
 using Apps.AmazonBedrock.Models.Inference.Requests;
 using Apps.AmazonBedrock.Models.Inference.Responses;
@@ -36,9 +37,17 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithCohereResponse> RunInferenceWithCohere(
         [ActionParameter] RunInferenceWithCohereRequest input)
     {
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var requestBody = new
         {
-            prompt = input.Prompt,
+            prompt,
             temperature = input.Temperature ?? 0.9,
             p = input.TopP ?? 0.75,
             k = input.TopK ?? 0,
@@ -56,9 +65,24 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithAnthropicClaudeResponse> RunInferenceWithAnthropicClaude(
         [ActionParameter] RunInferenceWithAnthropicClaudeRequest input)
     {
+        var systemPrompt = input.SystemPrompt ?? string.Empty;
+        var userPrompt = input.Prompt;
+        
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            var isEmptySystemPrompt = string.IsNullOrWhiteSpace(systemPrompt);
+
+            userPrompt = isEmptySystemPrompt
+                ? promptParts.UserPrompt
+                : $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+
+            systemPrompt = isEmptySystemPrompt ? promptParts.SystemPrompt : systemPrompt;
+        }
+        
         var requestBody = new
         {
-            prompt = (input.SystemPrompt == null ? "" : input.SystemPrompt) + $"\n\nHuman:{input.Prompt}\n\nAssistant:",
+            prompt = systemPrompt + $"\n\nHuman:{userPrompt}\n\nAssistant:",
             temperature = input.Temperature ?? 0.5,
             top_p = input.TopP ?? 1,
             top_k = input.TopK ?? 250,
@@ -76,9 +100,17 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithAI21Response> RunInferenceWithAI21(
         [ActionParameter] RunInferenceWithAI21Request input)
     {
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var requestBody = new
         {
-            prompt = input.Prompt,
+            prompt,
             temperature = input.Temperature ?? 0.5,
             topP = input.TopP ?? 0.5,
             maxTokens = input.MaximumTokensNumber ?? 512,
@@ -106,9 +138,17 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithMetaLlamaResponse> RunInferenceWithMetaLlama(
         [ActionParameter] RunInferenceWithMetaLlamaRequest input)
     {
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var requestBody = new
         {
-            prompt = input.Prompt,
+            prompt,
             temperature = input.Temperature ?? 0.5,
             top_p = input.TopP ?? 0.9,
             max_gen_len = input.MaximumTokensNumber ?? 512
@@ -123,9 +163,17 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithAmazonTitanResponse> RunInferenceWithAmazonTitan(
         [ActionParameter] RunInferenceWithAmazonTitanRequest input)
     {
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var requestBody = new
         {
-            inputText = input.Prompt,
+            inputText = prompt,
             textGenerationConfig = new
             {
                 temperature = input.Temperature ?? 0,
@@ -150,11 +198,19 @@ public class InferenceActions : BaseInvocable
     public async Task<RunInferenceWithStabilityAIDiffusionResponse> RunInferenceWithStabilityAIDiffusion(
         [ActionParameter] RunInferenceWithStabilityAIDiffusionRequest input)
     {
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var requestBody = new
         {
             text_prompts = new[]
             {
-                new { text = input.Prompt }
+                new { text = prompt }
             },
             cfg_scale = input.PromptStrength ?? 10,
             steps = input.GenerationSteps ?? 50
@@ -187,6 +243,14 @@ public class InferenceActions : BaseInvocable
             return Convert.ToBase64String(imageBytes);
         }
         
+        var prompt = input.Prompt;
+
+        if (input.IsBlackbirdPrompt != null && input.IsBlackbirdPrompt == true)
+        {
+            var promptParts = input.Prompt.FromBlackbirdPrompt();
+            prompt = $"{promptParts.SystemPrompt}\n\n{promptParts.UserPrompt}";
+        }
+        
         var height = 1024;
         var width = 1024;
 
@@ -203,14 +267,14 @@ public class InferenceActions : BaseInvocable
             textToImageParams = input.Image == null
                 ? new 
                 {
-                    text = input.Prompt,
+                    text = prompt,
                     negativeText = input.NegativePrompt
                 }
                 : null,
             imageVariationParams = input.Image != null
                 ? new
                 {
-                    text = input.Prompt,
+                    text = prompt,
                     negativeText = input.NegativePrompt,
                     images = new[] { await GetBase64StringForImage() }
                 }
@@ -235,66 +299,6 @@ public class InferenceActions : BaseInvocable
         return new() { GeneratedImage = generatedImageFileReference };
     }
 
-    #endregion
-    
-    #region Translation-related
-
-    [Action("Perform an LQA analysis with Anthropic Claude", Description =
-        "Perform an LQA analysis with Anthropic Claude " +
-        "model.")]
-    public async Task<PerformLQAAnalysisWithAnthropicClaudeResponse> PerformLQAAnalysisWithAnthropicClaude(
-        [ActionParameter] PerformLQAAnalysisWithAnthropicClaudeRequest input)
-    {
-        var lqaPrompt =
-            "You are an expert linguist and your task is to perform a Language Quality Assessment on input " +
-            "sentences. Provide a quality rating for the original translation from 0 (completely bad) to 10 " +
-            "(perfect). Perform an LQA analysis and use the MQM 2.0 format. For each issue found, specify the " +
-            "category, description of the issue, and severity. \n\n" +
-            $"{(input.SourceLanguage != null ? $"The {input.SourceLanguage} " : "")}\"{input.SourceText}\" " +
-            $"was translated as \"{input.TargetText}\"{(input.TargetLanguage != null ? $" into {input.TargetLanguage}" : "")}." +
-            $"\n\n{input.AdditionalPrompt}";
-
-        var translationPrompt =
-            "You are an expert linguist. You are provided with source (original) text" +
-            $"{(input.SourceLanguage != null ? $" in {input.SourceLanguage}" : "")} and target (translated) text" +
-            $"{(input.TargetLanguage != null ? $" in {input.TargetLanguage}" : "")}. Perform a Language Quality " +
-            "Assessment on input texts and respond with a corrected target text that would have no Language Quality " +
-            "Assessment errors (if there are any). Do not include any other information in the response. " +
-            $"\n\nSource (original) text: \"{input.SourceText}\"\n\nTarget (translated) text: \"{input.TargetText}\"";
-
-        var lqaRequestBody = new
-        {
-            prompt = $"\n\nHuman:{lqaPrompt}\n\nAssistant:",
-            temperature = input.Temperature ?? 0.5,
-            top_p = input.TopP ?? 1,
-            top_k = input.TopK ?? 250,
-            max_tokens_to_sample = input.MaximumTokensNumber ?? 4000,
-            stop_sequences = input.StopSequences ?? new string[] { }
-        };
-
-        var lqaResponse = await ExecuteRequestAsync<RunInferenceWithAnthropicClaudeResponse>(input.ModelArn,
-            lqaRequestBody);
-
-        var translationRequestBody = new
-        {
-            prompt = $"\n\nHuman:{translationPrompt}\n\nAssistant:",
-            temperature = input.Temperature ?? 0.5,
-            top_p = input.TopP ?? 1,
-            top_k = input.TopK ?? 250,
-            max_tokens_to_sample = input.MaximumTokensNumber ?? 8000,
-            stop_sequences = input.StopSequences ?? new string[] { }
-        };
-
-        var translationResponse = await ExecuteRequestAsync<RunInferenceWithAnthropicClaudeResponse>(input.ModelArn,
-            translationRequestBody);
-
-        return new()
-        {
-            LQAAnalysis = lqaResponse.Completion.Trim('"'),
-            CorrectedTranslation = translationResponse.Completion.Trim('"')
-        };
-    }
-    
     #endregion
 
     #region Embeddings
