@@ -1,17 +1,16 @@
 ﻿using Apps.AmazonBedrock.DataSourceHandlers.FloatParameterHandlers;
 using Apps.AmazonBedrock.DataSourceHandlers.ModelHandlers;
+using Apps.AmazonBedrock.Models.Inference.Requests.Base;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.AmazonBedrock.Models.Inference.Requests;
 
-public class RunInferenceWithStabilityAIDiffusionRequest
+public class RunInferenceWithStabilityAIDiffusionRequest : RunInferenceBase
 {
     [Display("Model")]
     [DataSource(typeof(StabilityAIDiffusionModelDataSourceHandler))]
     public string ModelArn { get; set; }
-    
-    public string Prompt { get; set; }
     
     [Display("Prompt strength")]
     [DataSource(typeof(PromptStrengthDataSourceHandler))]

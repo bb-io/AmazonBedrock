@@ -1,17 +1,16 @@
 ﻿using Apps.AmazonBedrock.DataSourceHandlers.FloatParameterHandlers;
 using Apps.AmazonBedrock.DataSourceHandlers.ModelHandlers;
+using Apps.AmazonBedrock.Models.Inference.Requests.Base;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.AmazonBedrock.Models.Inference.Requests;
 
-public class RunInferenceWithAnthropicClaudeRequest
+public class RunInferenceWithAnthropicClaudeRequest : RunInferenceBase
 {
     [Display("Model")]
     [DataSource(typeof(AnthropicClaudeModelDataSourceHandler))]
     public string ModelArn { get; set; }
-    
-    public string Prompt { get; set; }
 
     [Display("System prompt")]
     public string? SystemPrompt { get; set; }
