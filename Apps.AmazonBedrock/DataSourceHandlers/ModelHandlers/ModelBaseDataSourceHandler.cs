@@ -28,7 +28,7 @@ public abstract class ModelBaseDataSourceHandler : BaseInvocable, IAsyncDataSour
         }, cancellationToken);
         
         var modelsDictionary = foundationModels.ModelSummaries
-            .Where(model => Regex.IsMatch(model.ModelId, @"-v\d+$")) // retrieve only models with version suffix
+            .Where(model => Regex.IsMatch(model.ModelId, @"-v\d+")) // retrieve only models with version suffix
             .Where(model => context.SearchString == null 
                             || model.ModelName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .ToDictionary(model => model.ModelArn, model => model.ModelId);
