@@ -1,10 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.AmazonBedrock.DataSourceHandlers.EnumHandlers;
 
-public class ImageSizeDataSourceHandler : EnumDataHandler
+public class ImageSizeDataSourceHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
         { "1024x1024", "1024 x 1024" },
         { "768x768", "768 x 768" },
