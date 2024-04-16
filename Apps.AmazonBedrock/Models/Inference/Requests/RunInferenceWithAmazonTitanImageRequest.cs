@@ -3,6 +3,7 @@ using Apps.AmazonBedrock.DataSourceHandlers.FloatParameterHandlers;
 using Apps.AmazonBedrock.DataSourceHandlers.ModelHandlers;
 using Apps.AmazonBedrock.Models.Inference.Requests.Base;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Files;
 
@@ -24,7 +25,7 @@ public class RunInferenceWithAmazonTitanImageRequest : RunInferenceBase
     public FileReference? Image { get; set; }
     
     [Display("Size", Description = "Generated image size; defaults to 1024x1024.")]
-    [DataSource(typeof(ImageSizeDataSourceHandler))]
+    [StaticDataSource(typeof(ImageSizeDataSourceHandler))]
     public string? Size { get; set; } 
     
     [Display("Configuration scale", Description = "Specifies how strongly the generated image should adhere to " +
