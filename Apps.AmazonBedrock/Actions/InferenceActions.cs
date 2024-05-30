@@ -133,8 +133,8 @@ public class InferenceActions : BaseInvocable
         return response.Completions.First().Data;
     }
 
-    [Action("Generate text with Meta Llama 2", Description = "Generate text with Meta Llama 2 model or any custom " +
-                                                             "model that is based on Meta Llama 2 model.")]
+    [Action("Generate text with Meta Llama", Description = "Generate text with Meta Llama model or any custom " +
+                                                             "model that is based on Meta Llama model.")]
     public async Task<RunInferenceWithMetaLlamaResponse> RunInferenceWithMetaLlama(
         [ActionParameter] RunInferenceWithMetaLlamaRequest input)
     {
