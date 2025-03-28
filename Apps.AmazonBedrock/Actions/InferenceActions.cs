@@ -12,6 +12,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Newtonsoft.Json;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.AmazonBedrock.Actions;
 
@@ -338,9 +339,13 @@ public class InferenceActions : BaseInvocable
         }
         catch (AmazonBedrockRuntimeException exception)
         {
-            throw new(exception.Message);
+            throw new PluginApplicationException(exception.Message);
         }
-        
+        catch (Exception exception)
+        {
+            throw new PluginApplicationException(exception.Message);
+        }
+
         var jsonResponse = Encoding.UTF8.GetString(response.Body.ToArray());
         var responseObject = JsonConvert.DeserializeObject<TResponse>(jsonResponse, new JsonSerializerSettings
         {
