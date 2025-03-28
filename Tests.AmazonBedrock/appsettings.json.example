@@ -1,6 +1,7 @@
 {
-    "ConnectionDefinition": {
-        "api_key": ""
-    },
-    "TestFolder": "C:\\Users\\"
+  "ConnectionDefinition": {
+    "Access key": "",
+    "Access secret": ""
+  },
+  "TestFolder": "C:\\Users\\"
 }
