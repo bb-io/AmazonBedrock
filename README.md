@@ -52,7 +52,7 @@ Before you can connect you need to make sure that:
 
 ## Connecting
 
-1. Navigate to apps and search for Amazon Bedrock. If you cannot find Amazon Bedrock then click _Add App_ in the top right corner, select Amazon Bedrock and add the app to your Blackbird environment.
+1. Navigate to Apps, and identify the **Amazon Bedrock** app. You can use search to find it.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My organization'.
 4. Fill in the access key and secret obtained in the previous section.
