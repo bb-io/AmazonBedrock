@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <Product>Amazon Bedrock</Product>
     <Description>Fully managed service that offers a choice of high-performing foundation models from leading AI companies</Description>
-    <Version>1.4.5</Version>
+    <Version>1.4.6</Version>
     <AssemblyName>Apps.AmazonBedrock</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -18,5 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\README.md" Link="README.md" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>
