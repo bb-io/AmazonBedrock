@@ -15,7 +15,7 @@ public class FoundationModelDto
         InputModalities = model.InputModalities;
         OutputModalities = model.OutputModalities;
         ModelArn = model.ModelArn;
-        ResponseStreamingSupported = model.ResponseStreamingSupported;
+        ResponseStreamingSupported = model.ResponseStreamingSupported ?? false;
     }
     
     [Display("Model ID")]
